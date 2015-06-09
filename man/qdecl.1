@@ -1,0 +1,48 @@
+.Dd June 9, 2015
+.Dt qdecl 1
+.Sh NAME
+.Nm qdecl
+.Nd Declare AMQP queues and exchanges with ease!
+.Sh SYNOPSIS
+.Nm
+.Op Fl e | -exchange
+.br
+.Op Fl q | -queue
+.br
+.Op Fl d | -durable
+.br
+.Op Fl i | -internal
+.br
+.Op Fl a | -auto-delete
+.br
+.Op Fl -host
+.br
+.Op Fl -port
+.br
+.Op Fl -user
+.br
+.Op Fl -password
+.br
+.Op Fl v | -version
+.br
+.Op Fl h | -help
+.Op Ar exchange-name exchange-type | queue-name
+.Sh OPTIONS
+.Bl -ohang -offset
+.It Sy "-e, --exchange"
+Declare an exchange with the given specifications
+.It Sy "-q, --queue"
+Declare a queue instead of an exchange
+.It Sy "-d, --durable"
+Tells that this queue/exchange should be persisted to disk and must survive broker restarts
+.It Sy "-i, --internal"
+Tells the broker that this exchange must not be visible to applications
+.It Sy "-a, --auto-delete"
+If defined, the exchange is deleted when all queues have finished using it
+.It Sy "-v, --version"
+Prints qdecl's version
+.It Sy "-h, --help"
+Display a short program usage
+.El
+.Sh AUTHOR(S)
+Andrey K. Vital <andreykvital@gmail.com>
