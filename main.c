@@ -239,5 +239,7 @@ int main(int argc, char *argv[])
         return get_reply_type(amqp_connection) == AMQP_RESPONSE_NORMAL ? 0 : 1;
     }
 
+    // TODO: declare_queue
+
     return 0;
 }
