@@ -214,12 +214,16 @@ int main(int argc, char *argv[])
     // @link http://alanxz.github.io/rabbitmq-c/docs/0.2/amqp_8h.html#ace098ed2a6aacbffd96cf9f7cd9f6465
     if (login_reply.reply_type != AMQP_RESPONSE_NORMAL) {
         printf("Unable to authenticate :(\n");
+
+        return 1;
     }
 
     amqp_channel_open(amqp_connection, 1);
 
     if (get_reply_type(amqp_connection) != AMQP_RESPONSE_NORMAL) {
         printf("Unable to open channel :(\n");
+
+        return 1;
     }
 
     int args = (argc - optind);
