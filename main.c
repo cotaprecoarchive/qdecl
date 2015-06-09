@@ -142,6 +142,7 @@ int main(int argc, char *argv[])
 
         switch (c) {
             case 'h':
+                // TODO: display available [OPTIONS]!
                 printf("Usage: qdecl [...OPTIONS] [exchange-name exchange-type | queue-name]\n");
                 return 0;
 
@@ -212,7 +213,11 @@ int main(int argc, char *argv[])
     }
 
     if (! (declare_queue || declare_exchange)) {
-        printf("You must choose declare a queue or an exchange!\n");
+        printf(
+            "%s. %s\n",
+            "You must choose declare a queue or an exchange",
+            "See `qdecl -h` for more information!"
+        );
     }
 
     int args = (argc - optind);
@@ -239,6 +244,7 @@ int main(int argc, char *argv[])
         );
 
         return get_reply_type(amqp_connection) == AMQP_RESPONSE_NORMAL ? 0 : 1;
+        // TODO: amqp_channel_close
     }
 
     if (! declare_queue) {
@@ -266,4 +272,5 @@ int main(int argc, char *argv[])
     );
 
     return get_reply_type(amqp_connection) == AMQP_RESPONSE_NORMAL ? 0 : 1;
+    // TODO: amqp_channel_close
 }
