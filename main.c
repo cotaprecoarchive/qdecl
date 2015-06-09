@@ -20,6 +20,10 @@
  * THE SOFTWARE.
  */
 
+/**
+ * @author Andrey K. Vital <andreykvital@gmail.com>
+ */
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <getopt.h>
