@@ -236,9 +236,7 @@ int main(int argc, char *argv[])
             amqp_empty_table
         );
 
-        return get_reply_type(amqp_connection) == AMQP_RESPONSE_NORMAL
-            ? 0
-            : 1;
+        return get_reply_type(amqp_connection) == AMQP_RESPONSE_NORMAL ? 0 : 1;
     }
 
     return 0;
