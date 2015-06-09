@@ -174,6 +174,14 @@ int main(int argc, char *argv[])
         }
     }
 
+    if (! (declare_queue || declare_exchange)) {
+        printf(
+            "%s. %s\n",
+            "You must choose declare a queue or an exchange",
+            "See `qdecl -h` for more information!"
+        );
+    }
+
     // printf("%s %s %s %d\n", amqp_host, amqp_user, amqp_password, amqp_port);
 
     int status;
@@ -212,14 +220,6 @@ int main(int argc, char *argv[])
 
     if (get_reply_type(amqp_connection) != AMQP_RESPONSE_NORMAL) {
         printf("Unable to open channel :(\n");
-    }
-
-    if (! (declare_queue || declare_exchange)) {
-        printf(
-            "%s. %s\n",
-            "You must choose declare a queue or an exchange",
-            "See `qdecl -h` for more information!"
-        );
     }
 
     int args = (argc - optind);
