@@ -15,6 +15,8 @@
 .br
 .Op Fl a | -auto-delete
 .br
+.Op Fl x | -exclusive
+.br
 .Op Fl -host
 .br
 .Op Fl -port
@@ -39,6 +41,8 @@ Tells that this queue/exchange should be persisted to disk and must survive brok
 Tells the broker that this exchange must not be visible to applications
 .It Sy "-a, --auto-delete"
 If defined, the exchange is deleted when all queues have finished using it
+.It Sy "-x, --exclusive"
+If defined, the queue will be exclusive and only one consumer can consume it
 .It Sy "-v, --version"
 Prints qdecl's version
 .It Sy "-h, --help"
