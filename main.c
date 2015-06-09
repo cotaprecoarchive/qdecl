@@ -28,6 +28,12 @@
 #include <amqp.h>
 #include <amqp_framing.h>
 
+/**
+ * @param  argc
+ * @param  argv
+ * @param  args
+ * @return int (1 if requirements wasn't fulfilled 0 otherwise)
+ */
 int ensure_exchange_requirements(int argc, char *argv[], int args)
 {
     if (args == 1) {
@@ -46,13 +52,14 @@ int ensure_exchange_requirements(int argc, char *argv[], int args)
     }
 
     if (args == 2) {
-        char *type = argv[argc - args + 1];
+        char *exchange_name = argv[argc - args + 0];
+        char *exchange_type = argv[argc - args + 1];
 
         int invalid_ex_type = (
-            strcmp(type, "direct")  != 0 &&
-            strcmp(type, "topic")   != 0 &&
-            strcmp(type, "fanout")  != 0 &&
-            strcmp(type, "headers") != 0
+            strcmp(exchange_type, "direct")  != 0 &&
+            strcmp(exchange_type, "topic")   != 0 &&
+            strcmp(exchange_type, "fanout")  != 0 &&
+            strcmp(exchange_type, "headers") != 0
         );
 
         if (invalid_ex_type) {
@@ -61,7 +68,7 @@ int ensure_exchange_requirements(int argc, char *argv[], int args)
                 "You've provided an invalid exchange type, only `direct`, ",
                 "`topic`, `fanout`, `headers` ",
                 "are acceptable",
-                type
+                exchange_type
             );
 
             return 1;
@@ -71,6 +78,10 @@ int ensure_exchange_requirements(int argc, char *argv[], int args)
     return 0;
 }
 
+/**
+ * @param  connection
+ * @return int (AMQP_RESPONSE_NORMAL|AMQP_RESPONSE_SERVER_EXCEPTION|AMQP_RESPONSE_LIBRARY_EXCEPTION)
+ */
 int get_reply_type(amqp_connection_state_t connection)
 {
     amqp_rpc_reply_t reply;
@@ -80,7 +91,7 @@ int get_reply_type(amqp_connection_state_t connection)
     return reply.reply_type;
 }
 
-int main (int argc, char *argv[])
+int main(int argc, char *argv[])
 {
     static int
         durable,
@@ -90,18 +101,18 @@ int main (int argc, char *argv[])
         declare_queue;
 
     enum {
-        ARG_AMQP_HOST     = 255,
-        ARG_AMQP_PORT     = 256,
-        ARG_AMQP_USER     = 257,
-        ARG_AMQP_PASSWORD = 258
+        ARG_AMQP_HOST = 255,
+        ARG_AMQP_PORT,
+        ARG_AMQP_USER,
+        ARG_AMQP_PASSWORD
     };
 
     char const
-        *amqp_host,
-        *amqp_user,
-        *amqp_password;
+        *amqp_host     = "localhost",
+        *amqp_user     = "guest",
+        *amqp_password = "guest";
 
-    int amqp_port;
+    int amqp_port = 5672;
 
     for (;;) {
         int c, opt_index = 0;
@@ -121,7 +132,7 @@ int main (int argc, char *argv[])
             {0, 0, 0, 0}
         };
 
-        c = getopt_long(argc, argv, ":vdiaeqh", long_opts, &opt_index);
+        c = getopt_long(argc, argv, ":hvdiaeq", long_opts, &opt_index);
 
         if (c == -1) {
             break;
@@ -129,12 +140,12 @@ int main (int argc, char *argv[])
 
         switch (c) {
             case 'h':
-                printf("Usage!\n");
+                printf("Usage: qdecl [...opts] [exchange] [exchange-type]!\n");
                 return 0;
 
             case 'v':
                 printf("Version %s, build %s\n", VERSION, GIT_COMMIT);
-                break;
+                return 0;
 
             case ARG_AMQP_HOST:
                 amqp_host = optarg;
@@ -157,6 +168,8 @@ int main (int argc, char *argv[])
                 break;
         }
     }
+
+    // printf("%s %s %s %d\n", amqp_host, amqp_user, amqp_password, amqp_port);
 
     int status;
     amqp_socket_t *socket = NULL;
