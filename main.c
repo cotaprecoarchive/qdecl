@@ -97,6 +97,7 @@ int main(int argc, char *argv[])
         durable,
         internal,
         auto_delete,
+        exclusive,
         declare_exchange,
         declare_queue;
 
@@ -123,6 +124,7 @@ int main(int argc, char *argv[])
             {"durable",     no_argument,       &durable,          'd'},
             {"internal",    no_argument,       &internal,         'i'},
             {"auto-delete", no_argument,       &auto_delete,      'a'},
+            {"exclusive",   no_argument,       &exclusive,        'x'},
             {"exchange",    no_argument,       &declare_exchange, 'e'},
             {"queue",       no_argument,       &declare_queue,    'q'},
             {"host",        required_argument, 0,                 ARG_AMQP_HOST},
@@ -132,7 +134,7 @@ int main(int argc, char *argv[])
             {0, 0, 0, 0}
         };
 
-        c = getopt_long(argc, argv, ":hvdiaeq", long_opts, &opt_index);
+        c = getopt_long(argc, argv, ":hvdiaxeq", long_opts, &opt_index);
 
         if (c == -1) {
             break;
@@ -239,7 +241,29 @@ int main(int argc, char *argv[])
         return get_reply_type(amqp_connection) == AMQP_RESPONSE_NORMAL ? 0 : 1;
     }
 
-    // TODO: declare_queue
+    if (! declare_queue) {
+        return 0;
+    }
 
-    return 0;
+    char *queue_name = argv[argc - args + 0];
+
+    if (! queue_name) {
+        printf("You haven't provided the queue name to declare\n");
+
+        return 1;
+    }
+
+    // @link https://github.com/alanxz/rabbitmq-c/blob/9626dd5cd5f78894f1416a1afd2d624ddd4904ae/librabbitmq/amqp_framing.h#L842-L850
+    amqp_queue_declare(
+        amqp_connection,
+        1, /* channel */
+        amqp_cstring_bytes(queue_name),
+        0 /* passive */,
+        durable,
+        /* exclusive */ 0,
+        auto_delete,
+        amqp_empty_table
+    );
+
+    return get_reply_type(amqp_connection) == AMQP_RESPONSE_NORMAL ? 0 : 1;
 }
