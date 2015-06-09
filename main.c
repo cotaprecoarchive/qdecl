@@ -81,6 +81,17 @@ int ensure_exchange_requirements(int argc, char *argv[], int args)
 }
 
 /**
+ * @param connection
+ * @param channel
+ */
+void close_connection_and_channel(amqp_connection_state_t connection, int channel)
+{
+    amqp_channel_close(connection, channel, AMQP_REPLY_SUCCESS);
+
+    amqp_connection_close(connection, AMQP_REPLY_SUCCESS);
+}
+
+/**
  * @param  connection
  * @return int (AMQP_RESPONSE_NORMAL|AMQP_RESPONSE_SERVER_EXCEPTION|AMQP_RESPONSE_LIBRARY_EXCEPTION)
  */
@@ -251,9 +262,7 @@ int main(int argc, char *argv[])
 
         int result = get_reply_type(amqp_connection) == AMQP_RESPONSE_NORMAL ? 0 : 1;
 
-        amqp_channel_close(amqp_connection, 1 /* channel */, AMQP_REPLY_SUCCESS);
-
-        amqp_connection_close(amqp_connection, AMQP_REPLY_SUCCESS);
+        close_connection_and_channel(amqp_connection, 1);
 
         return result;
     }
@@ -284,9 +293,7 @@ int main(int argc, char *argv[])
 
     int result = get_reply_type(amqp_connection) == AMQP_RESPONSE_NORMAL ? 0 : 1;
 
-    amqp_channel_close(amqp_connection, 1 /* channel */, AMQP_REPLY_SUCCESS);
-
-    amqp_connection_close(amqp_connection, AMQP_REPLY_SUCCESS);
+    close_connection_and_channel(amqp_connection, 1);
 
     return result;
 }
