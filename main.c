@@ -40,6 +40,12 @@
  */
 int ensure_exchange_requirements(int argc, char *argv[], int args)
 {
+    if (args == 0) {
+        printf("You must specify exchange name and type\n");
+
+        return 1;
+    }
+
     if (args == 1) {
         printf(
             "You must specify exchange type: direct, topic, fanout or headers for exchange `%s`\n",
@@ -49,34 +55,26 @@ int ensure_exchange_requirements(int argc, char *argv[], int args)
         return 1;
     }
 
-    if (args == 0) {
-        printf("You must specify exchange name and type\n");
+    char *exchange_name = argv[argc - args + 0];
+    char *exchange_type = argv[argc - args + 1];
 
-        return 1;
-    }
+    int invalid_ex_type = (
+        strcmp(exchange_type, "direct")  != 0 &&
+        strcmp(exchange_type, "topic")   != 0 &&
+        strcmp(exchange_type, "fanout")  != 0 &&
+        strcmp(exchange_type, "headers") != 0
+    );
 
-    if (args == 2) {
-        char *exchange_name = argv[argc - args + 0];
-        char *exchange_type = argv[argc - args + 1];
-
-        int invalid_ex_type = (
-            strcmp(exchange_type, "direct")  != 0 &&
-            strcmp(exchange_type, "topic")   != 0 &&
-            strcmp(exchange_type, "fanout")  != 0 &&
-            strcmp(exchange_type, "headers") != 0
+    if (invalid_ex_type) {
+        printf(
+            "%s%s%s. Got `%s`\n",
+            "You've provided an invalid exchange type, only `direct`, ",
+            "`topic`, `fanout`, `headers` ",
+            "are acceptable",
+            exchange_type
         );
 
-        if (invalid_ex_type) {
-            printf(
-                "%s%s%s. Got `%s`\n",
-                "You've provided an invalid exchange type, only `direct`, ",
-                "`topic`, `fanout`, `headers` ",
-                "are acceptable",
-                exchange_type
-            );
-
-            return 1;
-        }
+        return 1;
     }
 
     return 0;
@@ -240,7 +238,7 @@ int main(int argc, char *argv[])
             1, /* channel */
             amqp_cstring_bytes(exchange),
             amqp_cstring_bytes(exchange_type),
-            0 /* passive */,
+            0, /* passive */
             durable,
             auto_delete,
             internal,
@@ -268,9 +266,9 @@ int main(int argc, char *argv[])
         amqp_connection,
         1, /* channel */
         amqp_cstring_bytes(queue_name),
-        0 /* passive */,
+        0, /* passive */
         durable,
-        /* exclusive */ 0,
+        0, /* exclusive */
         auto_delete,
         amqp_empty_table
     );
