@@ -245,8 +245,13 @@ int main(int argc, char *argv[])
             amqp_empty_table
         );
 
-        return get_reply_type(amqp_connection) == AMQP_RESPONSE_NORMAL ? 0 : 1;
-        // TODO: amqp_channel_close
+        int result = get_reply_type(amqp_connection) == AMQP_RESPONSE_NORMAL ? 0 : 1;
+
+        amqp_channel_close(amqp_connection, 1 /* channel */, AMQP_REPLY_SUCCESS);
+
+        amqp_connection_close(amqp_connection, AMQP_REPLY_SUCCESS);
+
+        return result;
     }
 
     if (! declare_queue) {
@@ -273,6 +278,11 @@ int main(int argc, char *argv[])
         amqp_empty_table
     );
 
-    return get_reply_type(amqp_connection) == AMQP_RESPONSE_NORMAL ? 0 : 1;
-    // TODO: amqp_channel_close
+    int result = get_reply_type(amqp_connection) == AMQP_RESPONSE_NORMAL ? 0 : 1;
+
+    amqp_channel_close(amqp_connection, 1 /* channel */, AMQP_REPLY_SUCCESS);
+
+    amqp_connection_close(amqp_connection, AMQP_REPLY_SUCCESS);
+
+    return result;
 }
