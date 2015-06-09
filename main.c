@@ -140,7 +140,7 @@ int main(int argc, char *argv[])
 
         switch (c) {
             case 'h':
-                printf("Usage: qdecl [...opts] [exchange] [exchange-type]!\n");
+                printf("Usage: qdecl [...OPTIONS] [exchange-name exchange-type | queue-name]\n");
                 return 0;
 
             case 'v':
