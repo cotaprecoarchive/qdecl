@@ -2,9 +2,10 @@
 
 VERSION	:= $(shell cat ./VERSION)
 GIT_COMMIT := $(shell git rev-parse --short HEAD)
+MANPATH := "/usr/share/man/man1"
 
 ifeq (${RABBITMQC_HOME},)
-	RABBITMQC_HOME = "/usr/local/src/rabbitmq/rabbitmq-c"
+	RABBITMQC_HOME := "/usr/local/src/rabbitmq/rabbitmq-c"
 endif
 
 ifeq (${QDECL_INSTALL_ROOT},)
@@ -16,6 +17,8 @@ clean:
 
 install: build
 	@install -D -m0755 build/qdecl $(QDECL_INSTALL_ROOT)/qdecl
+	@mkdir -p $(MANPATH)
+	@cp man/qdecl.1 $(MANPATH)
 
 uninstall:
 	@rm -f $(QDECL_INSTALL_ROOT)/qdecl
