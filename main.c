@@ -200,7 +200,9 @@ int main(int argc, char *argv[])
     amqp_connection_state_t amqp_connection;
 
     amqp_connection = amqp_new_connection();
+
     socket = amqp_tcp_socket_new(amqp_connection);
+
     status = amqp_socket_open(socket, amqp_host, amqp_port);
 
     // @link http://alanxz.github.io/rabbitmq-c/docs/0.4.0/amqp_8h.html#a05dadc32b3a59918206ac38a53606723
@@ -247,7 +249,7 @@ int main(int argc, char *argv[])
         char *exchange      = argv[argc - args + 0];
         char *exchange_type = argv[argc - args + 1];
 
-        // @link https://github.com/alanxz/rabbitmq-c/blob/9626dd5cd5f78894f1416a1afd2d624ddd4904ae/librabbitmq/amqp_framing.h#L785-L793
+        // @link https://github.com/alanxz/rabbitmq-c/blob/master/librabbitmq/amqp_framing.h#L785-L793
         amqp_exchange_declare(
             amqp_connection,
             1, /* channel */
@@ -279,7 +281,7 @@ int main(int argc, char *argv[])
         return 1;
     }
 
-    // @link https://github.com/alanxz/rabbitmq-c/blob/9626dd5cd5f78894f1416a1afd2d624ddd4904ae/librabbitmq/amqp_framing.h#L842-L850
+    // @link https://github.com/alanxz/rabbitmq-c/blob/master/librabbitmq/amqp_framing.h#L842-L850
     amqp_queue_declare(
         amqp_connection,
         1, /* channel */
